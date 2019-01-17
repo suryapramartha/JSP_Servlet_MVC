@@ -6,11 +6,14 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
+	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
 <title>Employee List</title>
 </head>
 <body>
+<div class="container">
 <h1 align="left">Employee List</h1>
-<table border="1">
+<table border="1" class="table">
 	<tr>
 		<th>ID</th>
 		<th>Name</th>
@@ -39,7 +42,10 @@
 		</tr>
 	</c:forEach>
 </table>
+<input type="button" class="btn btn-primary" value="Back to Home" onclick="window.location='index.html';"></input> 
+<input type="button" class="btn btn-success" value="Add New Employee" onclick="window.location='newEmployee.html';"></input>
+ 
+</div>
 
-<a href="index.html">Back to Home</a> | <a href="newEmployee.html">Add New Employee</a>
 </body>
 </html>
