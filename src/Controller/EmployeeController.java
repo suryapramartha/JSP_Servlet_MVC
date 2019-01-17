@@ -64,13 +64,23 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String param = request.getParameter("command");
 		if(param.equalsIgnoreCase("CREATE")) {
-			insertEmployee(request,response);
+			try {
+				insertEmployee(request,response);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		if(param.equalsIgnoreCase("UPDATE")) {
-			updateEmployee(request,response);
+			try {
+				updateEmployee(request,response);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
-	private void insertEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void insertEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, InterruptedException {
 		String nama = request.getParameter("emplNameForm");
 		String age = request.getParameter("emplAgeForm");
 		String address = request.getParameter("emplAddressForm");
@@ -80,6 +90,7 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 		try {
 			con = MySQLConnection.getMySQLConnection();
 			DBUtils.insertEmployee(con,emp_id);
+			Thread.sleep(500);
 			getAllEmployee(request,response);	
 			
 		} catch (ClassNotFoundException | SQLException e) {
@@ -89,12 +100,13 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 		
 	}
 
-	private void deleteEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void deleteEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, InterruptedException {
 		Connection con;
 		String emp_id = request.getParameter("employeeId");
 		try {
 			con = MySQLConnection.getMySQLConnection();
 			DBUtils.deleteEmployee(con,emp_id);
+			Thread.sleep(500);
 			getAllEmployee(request,response);
 				
 		} catch (ClassNotFoundException | SQLException e) {
@@ -138,10 +150,11 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 	}
 
 	/**
+	 * @throws InterruptedException 
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 
-	private void updateEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void updateEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, InterruptedException {
 		Connection con;
 		
 		String emp_id =  request.getParameter("emplIdForm");
@@ -154,6 +167,7 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 		try {
 			con = MySQLConnection.getMySQLConnection();
 			DBUtils.updateEmployee(con,empl);
+			Thread.sleep(500);
 			getAllEmployee(request,response);
 				
 		} catch (ClassNotFoundException | SQLException e) {
