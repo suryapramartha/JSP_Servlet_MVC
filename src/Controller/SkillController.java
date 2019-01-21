@@ -12,25 +12,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mysql.cj.MysqlConnection;
-
 import Database.DBAssignedSkill;
-import Database.DBProject;
+import Database.DBSkill;
 import Database.DBUtils;
 import Database.MySQLConnection;
 import Model.Employee;
+import Model.Skill;
 
 /**
- * Servlet implementation class EmployeeController
+ * Servlet implementation class SkillController
  */
-@WebServlet("/EmployeeController")
-public class EmployeeController extends HttpServlet {
+@WebServlet("/SkillController")
+public class SkillController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public EmployeeController() {
+    public SkillController() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -38,8 +37,7 @@ public class EmployeeController extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			String step = request.getParameter("command");
 			if(step==null) {
@@ -48,13 +46,13 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 			
 			switch (step) {
 			case "LOAD_ALL":
-				getAllEmployee(request,response);
+				getAllSkill(request,response);
 				break;
 			case "EDIT":
-				getSelectedEmployee(request,response);
+				getSelectedSkill(request,response);
 				break;
 			case "DELETE":
-				deleteEmployee(request,response);
+				deleteSkill(request,response);
 				break;
 			default:
 				break;
@@ -63,11 +61,15 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 			e.printStackTrace();
 		}
 	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String param = request.getParameter("command");
 		if(param.equalsIgnoreCase("CREATE")) {
 			try {
-				insertEmployee(request,response);
+				insertSkill(request,response);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -75,25 +77,24 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 		}
 		if(param.equalsIgnoreCase("UPDATE")) {
 			try {
-				updateEmployee(request,response);
+				updateSkill(request,response);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
-	private void insertEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, InterruptedException {
-		String nama = request.getParameter("emplNameForm");
-		String age = request.getParameter("emplAgeForm");
-		String address = request.getParameter("emplAddressForm");
-		int age1 = Integer.valueOf(age);
+
+	private void insertSkill(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, InterruptedException {
+		String nama = request.getParameter("skillNameForm");
+		String desc = request.getParameter("skillDescForm");
 		Connection con;
-		Employee emp_id = new Employee(0, nama, age1, 0, address);
+		Skill skill_id = new Skill(0, nama,desc, 0);
 		try {
 			con = MySQLConnection.getMySQLConnection();
-			DBUtils.insertEmployee(con,emp_id);
+			DBSkill.insertSkill(con,skill_id);
 			Thread.sleep(500);
-			getAllEmployee(request,response);	
+			getAllSkill(request,response);	
 			
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
@@ -102,14 +103,14 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 		
 	}
 
-	private void deleteEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, InterruptedException {
+	private void deleteSkill(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, InterruptedException {
 		Connection con;
-		String emp_id = request.getParameter("employeeId");
+		String skill_id = request.getParameter("skillId");
 		try {
 			con = MySQLConnection.getMySQLConnection();
-			DBUtils.deleteEmployee(con,emp_id);
+			DBSkill.deleteSkill(con,skill_id);
 			Thread.sleep(500);
-			getAllEmployee(request,response);
+			getAllSkill(request,response);
 				
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
@@ -117,15 +118,15 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 		
 	}
 
-	private void getSelectedEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void getSelectedSkill(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Connection con;
-		List<String> emp = null;
-		String emp_id = request.getParameter("employeeId");
+		List<String> sk = null;
+		String skill_id = request.getParameter("skillId");
 		try {
 			con = MySQLConnection.getMySQLConnection();
-			emp = DBUtils.getSpecificEmployee(con,emp_id);
-			request.setAttribute("employeeSelectedAttribute", emp);
-			RequestDispatcher rd = request.getRequestDispatcher("/updateView.jsp");
+			sk = DBSkill.getSpecificSkill(con,skill_id);
+			request.setAttribute("skillSelectedAttribute", sk);
+			RequestDispatcher rd = request.getRequestDispatcher("/updateSkillView.jsp");
 			rd.forward(request, response);
 				
 		} catch (ClassNotFoundException | SQLException e) {
@@ -134,16 +135,15 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 		
 	}
 
-	private void getAllEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void getAllSkill(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		Connection con;
-		List<Employee> emp = null;
+		List<Skill> sk = null;
 		try {
 			con = MySQLConnection.getMySQLConnection();
-			emp = DBUtils.getAllEmployeeActive(con);
-
-			request.setAttribute("employeeAttribute", emp);
-			RequestDispatcher rd = request.getRequestDispatcher("/employeeView.jsp");
+			sk = DBSkill.getAllSkillActive(con);
+			request.setAttribute("skillAttribute", sk);
+			RequestDispatcher rd = request.getRequestDispatcher("/skillView.jsp");
 			rd.forward(request, response);
 				
 		} catch (ClassNotFoundException | SQLException e) {
@@ -156,32 +156,26 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 
-	private void updateEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, InterruptedException {
+	private void updateSkill(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, InterruptedException {
 		Connection con;
 		
-		String emp_id =  request.getParameter("emplIdForm");
-		String emp_name = request.getParameter("emplNameForm");
-		String emp_age = request.getParameter("emplAgeForm");
-		String emp_address = request.getParameter("emplAddressForm");
-		int id1 = Integer.valueOf(emp_id);
-		int emp_age1 = Integer.valueOf(emp_age);
-		Employee empl = new Employee(id1, emp_name, 0, emp_age1, emp_address);
+		String skill_id =  request.getParameter("skillIdForm");
+		String skill_name = request.getParameter("skillNameForm");
+		String skill_desc = request.getParameter("skillDescForm");
+		int id1 = Integer.valueOf(skill_id);
+		Skill skillful = new Skill(id1, skill_name, skill_desc,0);
 		try {
 			con = MySQLConnection.getMySQLConnection();
-			DBUtils.updateEmployee(con,empl);
+			DBSkill.updateSkill(con,skillful);
 			
 			con = MySQLConnection.getMySQLConnection();
-			DBAssignedSkill.updateEmployee(con,empl);
-			
-			con = MySQLConnection.getMySQLConnection();
-			DBProject.updateEmployee(con,empl);
+			DBAssignedSkill.updateSkill(con,skillful);
 			
 			Thread.sleep(500);
-			getAllEmployee(request,response);
+			getAllSkill(request,response);
 				
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
 	}
-
 }
