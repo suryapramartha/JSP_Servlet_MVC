@@ -31,14 +31,22 @@
 			<c:param name="command" value="DELETE"></c:param>
 			<c:param name="employeeId" value="${x.empl_id}"></c:param>
 		</c:url>
+		<c:url var="tempCompetency" value="AssignedSkillController">
+			<c:param name="command" value="LOAD_ALL"></c:param>
+			<c:param name="employeeId" value="${x.empl_id}"></c:param>
+		</c:url>
+		
 		<tr>
 			<td>${x.empl_id}</td>
 			<td>${x.empl_name}</td>
 			<td>${x.empl_status}</td>
 			<td>${x.empl_age}</td>
 			<td>${x.empl_address}</td>
-			<td><a href="${tempUpdate}">Edit</a> | 
-			<a href="${tempDelete}" onclick="if(!(confirm('Are you sure?'))) return false">Delete</a></td>
+			<td>
+				<a href="${tempUpdate}">Edit</a> | 
+				<a href="${tempDelete}" onclick="if(!(confirm('Are you sure?'))) return false">Delete</a> | 			
+				<a href="${tempCompetency}">View Competency</a>
+			</td>
 		</tr>
 	</c:forEach>
 </table>
